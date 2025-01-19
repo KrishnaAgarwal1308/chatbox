@@ -39,7 +39,7 @@ def chat_with_bot():
     
     # Pass the conversation history directly
     response = ollama.chat(
-        model='hf.co/krishnaagarwal1308/llama-3-8b-Instruct-bnb-4bit-ksitij-team',
+        model='hf.co/krishnaagarwal1308/llama-3-8b-Instruct-bnb-4bit-ksitij-final',
         messages=conversation_history
     )
     
