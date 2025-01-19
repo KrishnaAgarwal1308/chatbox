@@ -1,39 +1,28 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
 // Define the structure of the request and response
 type ChatRequestBody = {
   message: string;
 };
 
-type ChatResponseBody = {
-  response: string;
-};
+// const pythonServerUrl = 'http://192.168.0.102:5000/chat';
+const pythonServerUrl = 'http://10.147.56.2:5000/chat';
 
-const pythonServerUrl = 'http://192.168.0.102:5000/chat'; 
 
-export default async function POST(
-  req: NextApiRequest,
-  res: NextApiResponse<ChatResponseBody | { error: string }>
-): Promise<void> {
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method Not Allowed' });
-    return;
-  }
-
-  const { message } = req.body as ChatRequestBody;
-
-  if (!message || typeof message !== 'string') {
-    res.status(400).json({ error: 'Invalid request body' });
-    return;
-  }
-
+export async function POST(req: Request) {
   try {
+    const body = await req.json() as ChatRequestBody;
+
+    if (!body.message || typeof body.message !== 'string') {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
+
     const response = await fetch(pythonServerUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message: body.message }),
     });
 
     if (!response.ok) {
@@ -42,9 +31,9 @@ export default async function POST(
     }
 
     const data = await response.json();
-    res.status(200).json({ response: data.response });
-  } catch (error: unknown) {
+    return NextResponse.json({ response: data.response });
+  } catch (error) {
     console.error('Error communicating with Python server:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

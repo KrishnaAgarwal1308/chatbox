@@ -49,8 +49,9 @@ const Chatbox = () => {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your message..."
           style={{ width: '80%', padding: '10px' }}
+          className='text-black'
         />
-        <button onClick={sendMessage} style={{ padding: '10px', marginLeft: '10px' }}>
+        <button onClick={sendMessage} onKeyDown={(e) => {if(e=="Enter")sendMessage}} style={{ padding: '10px', marginLeft: '10px' }}>
           Send
         </button>
       </div>

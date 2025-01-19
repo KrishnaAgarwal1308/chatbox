@@ -24,6 +24,7 @@ except FileNotFoundError:
 
 @app.route('/chat', methods=['POST'])
 def chat_with_bot():
+    print("recieved request")
     data = request.json
     user_message = data.get('message', '')
 
